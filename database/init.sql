@@ -504,7 +504,7 @@ CREATE TABLE `sys_dict_item` (
     `dict_type_id` BIGINT NOT NULL COMMENT '字典类型 ID',
     `dict_label` VARCHAR(100) NOT NULL COMMENT '字典标签',
     `dict_value` VARCHAR(200) NOT NULL COMMENT '字典值',
-    `dict_sort` INT DEFAULT 0 COMMENT '字典排序',
+    `sort` INT DEFAULT 0 COMMENT '字典排序',
     `description` VARCHAR(200) DEFAULT NULL COMMENT '备注',
     `status` TINYINT NOT NULL DEFAULT 1 COMMENT '状态：0-禁用 1-启用',
     `created_by` BIGINT DEFAULT NULL COMMENT '创建人',
@@ -638,7 +638,7 @@ INSERT INTO `sys_dict_type` (`dict_code`, `dict_name`, `description`, `status`) 
 ('oper_status', '操作状态', '操作执行状态', 1);
 
 -- 8.10 插入默认字典数据
-INSERT INTO `sys_dict_item` (`dict_type_id`, `dict_label`, `dict_value`, `dict_sort`, `description`)
+INSERT INTO `sys_dict_item` (`dict_type_id`, `dict_label`, `dict_value`, `sort`, `description`)
 SELECT dt.id, label, value, sort, item_desc FROM (
     -- 用户状态
     SELECT 1 as type_id, '正常' as label, '1' as value, 1 as sort, '正常状态' as item_desc UNION ALL
