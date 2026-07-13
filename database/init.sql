@@ -110,7 +110,7 @@ CREATE TABLE `sys_role_menu` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='角色菜单关联表';
 
 -- 1.6 部门表
-CREATE TABLE `sys_dept` (
+CREATE TABLE `hr_department` (
     `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '部门 ID',
     `parent_id` BIGINT NOT NULL DEFAULT 0 COMMENT '父部门 ID',
     `dept_name` VARCHAR(50) NOT NULL COMMENT '部门名称',
@@ -120,6 +120,7 @@ CREATE TABLE `sys_dept` (
     `email` VARCHAR(100) DEFAULT NULL COMMENT '邮箱',
     `sort_order` INT DEFAULT 0 COMMENT '排序',
     `status` TINYINT NOT NULL DEFAULT 1 COMMENT '状态：0-禁用 1-启用',
+    `remark` VARCHAR(500) DEFAULT NULL COMMENT '备注',
     `created_by` BIGINT DEFAULT NULL COMMENT '创建人',
     `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     `updated_by` BIGINT DEFAULT NULL COMMENT '更新人',
@@ -131,15 +132,17 @@ CREATE TABLE `sys_dept` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='部门表';
 
 -- 1.7 岗位表
-CREATE TABLE `sys_post` (
+CREATE TABLE `hr_position` (
     `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '岗位 ID',
     `post_code` VARCHAR(50) NOT NULL COMMENT '岗位编码',
     `post_name` VARCHAR(50) NOT NULL COMMENT '岗位名称',
+    `position_name` VARCHAR(50) DEFAULT NULL COMMENT '职位名称',
     `post_level` VARCHAR(20) DEFAULT NULL COMMENT '岗位职级',
     `dept_id` BIGINT DEFAULT NULL COMMENT '所属部门 ID',
     `description` VARCHAR(500) DEFAULT NULL COMMENT '岗位描述',
     `sort_order` INT DEFAULT 0 COMMENT '排序',
     `status` TINYINT NOT NULL DEFAULT 1 COMMENT '状态：0-禁用 1-启用',
+    `remark` VARCHAR(500) DEFAULT NULL COMMENT '备注',
     `created_by` BIGINT DEFAULT NULL COMMENT '创建人',
     `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     `updated_by` BIGINT DEFAULT NULL COMMENT '更新人',
