@@ -111,10 +111,10 @@
         <a-row :gutter="16">
           <a-col :span="12">
             <a-form-item label="性别" name="gender">
-              <a-select v-model:value="formData.gender" placeholder="请选择性别">
-                <a-select-option value="男">男</a-select-option>
-                <a-select-option value="女">女</a-select-option>
-              </a-select>
+              <a-radio-group v-model:value="formData.gender">
+                <a-radio :value="1">男</a-radio>
+                <a-radio :value="0">女</a-radio>
+              </a-radio-group>
             </a-form-item>
           </a-col>
           <a-col :span="12">
@@ -126,40 +126,113 @@
 
         <a-row :gutter="16">
           <a-col :span="12">
-            <a-form-item label="部门" name="deptId">
-              <a-select v-model:value="formData.deptId" placeholder="请选择部门">
-                <a-select-option label="技术部" :value="1">技术部</a-select-option>
-                <a-select-option label="销售部" :value="2">销售部</a-select-option>
-                <a-select-option label="市场部" :value="3">市场部</a-select-option>
-                <a-select-option label="人事部" :value="4">人事部</a-select-option>
-              </a-select>
+            <a-form-item label="邮箱" name="email">
+              <a-input v-model:value="formData.email" placeholder="请输入邮箱" />
             </a-form-item>
           </a-col>
           <a-col :span="12">
-            <a-form-item label="岗位" name="postId">
-              <a-input v-model:value="formData.postId" placeholder="请输入岗位" />
+            <a-form-item label="身份证号" name="idCard">
+              <a-input v-model:value="formData.idCard" placeholder="请输入身份证号" />
             </a-form-item>
           </a-col>
         </a-row>
 
         <a-row :gutter="16">
           <a-col :span="12">
-            <a-form-item label="入职日期" name="hireDate">
+            <a-form-item label="出生日期" name="birthDate">
               <a-date-picker
-                v-model:value="formData.hireDate"
-                placeholder="选择入职日期"
+                v-model:value="formData.birthDate"
+                placeholder="选择出生日期"
                 style="width: 100%"
-                value-format="YYYY-MM-DD"
+                format="YYYY-MM-DD"
               />
             </a-form-item>
           </a-col>
           <a-col :span="12">
-            <a-form-item label="员工状态" name="employeeStatus">
-              <a-select v-model:value="formData.employeeStatus" placeholder="请选择状态">
-                <a-select-option value="在职">在职</a-select-option>
-                <a-select-option value="试用">试用</a-select-option>
-                <a-select-option value="离职">离职</a-select-option>
+            <a-form-item label="入职时间" name="hireDate">
+              <a-date-picker
+                v-model:value="formData.hireDate"
+                placeholder="选择入职时间"
+                style="width: 100%"
+                format="YYYY-MM-DD"
+              />
+            </a-form-item>
+          </a-col>
+        </a-row>
+
+        <a-row :gutter="16">
+          <a-col :span="12">
+            <a-form-item label="所属部门" name="deptId">
+              <a-select v-model:value="formData.deptId" placeholder="请选择部门" style="width: 100%">
+                <a-select-option
+                  v-for="dept in departmentList"
+                  :key="dept.id"
+                  :value="dept.id"
+                >
+                  {{ dept.deptName }}
+                </a-select-option>
               </a-select>
+            </a-form-item>
+          </a-col>
+          <a-col :span="12">
+            <a-form-item label="所属岗位" name="postId">
+              <a-select v-model:value="formData.postId" placeholder="请选择岗位" style="width: 100%">
+                <a-select-option
+                  v-for="pos in positionList"
+                  :key="pos.id"
+                  :value="pos.id"
+                >
+                  {{ pos.positionName || pos.postName }}
+                </a-select-option>
+              </a-select>
+            </a-form-item>
+          </a-col>
+        </a-row>
+
+        <a-row :gutter="16">
+          <a-col :span="12">
+            <a-form-item label="员工类型" name="employeeType">
+              <a-select v-model:value="formData.employeeType" style="width: 100%">
+                <a-select-option :value="1">正式</a-select-option>
+                <a-select-option :value="2">试用</a-select-option>
+                <a-select-option :value="3">实习</a-select-option>
+                <a-select-option :value="4">外包</a-select-option>
+              </a-select>
+            </a-form-item>
+          </a-col>
+          <a-col :span="12">
+            <a-form-item label="在职状态" name="employeeStatus">
+              <a-select v-model:value="formData.employeeStatus" style="width: 100%">
+                <a-select-option :value="1">在职</a-select-option>
+                <a-select-option :value="0">离职</a-select-option>
+                <a-select-option :value="2">停薪留职</a-select-option>
+              </a-select>
+            </a-form-item>
+          </a-col>
+        </a-row>
+
+        <a-row :gutter="16">
+          <a-col :span="12">
+            <a-form-item label="关联用户" name="userId">
+              <a-select
+                v-model:value="formData.userId"
+                placeholder="请选择关联系统用户（可选）"
+                allow-clear
+                style="width: 100%"
+              >
+                <a-select-option
+                  v-for="user in userList"
+                  :key="user.id"
+                  :value="user.id"
+                >
+                  {{ user.username }} - {{ user.realName || user.name }}
+                </a-select-option>
+              </a-select>
+            </a-form-item>
+          </a-col>
+          <a-col :span="12">
+            <a-form-item label="学历" name="education">
+              <a-input v-model:value="formData.education" placeholder="请输入学历" />
             </a-form-item>
           </a-col>
         </a-row>
@@ -179,6 +252,7 @@
 <script setup>
 import { ref, reactive, onMounted, h } from 'vue'
 import { message, Modal } from 'ant-design-vue'
+import dayjs from 'dayjs'
 import {
   SearchOutlined,
   ReloadOutlined,
@@ -189,13 +263,26 @@ import {
   EditOutlined,
   EyeOutlined
 } from '@ant-design/icons-vue'
-import { employeeApi } from '@/api/employee'
+import {
+  getEmployeePage,
+  addEmployee,
+  updateEmployee,
+  deleteEmployee
+} from '@/api/employee'
+import { getDepartmentList } from '@/api/department'
+import { getPositionList } from '@/api/position'
+import { getUserList } from '@/api/auth'
 
 const loading = ref(false)
 const tableData = ref([])
 const dialogVisible = ref(false)
 const dialogTitle = ref('新增员工')
 const formRef = ref(null)
+
+// 下拉数据
+const departmentList = ref([])
+const positionList = ref([])
+const userList = ref([])
 
 const searchForm = reactive({
   name: '',
@@ -210,14 +297,21 @@ const pagination = reactive({
 })
 
 const formData = reactive({
+  id: null,
   empNo: '',
   name: '',
-  gender: '',
+  gender: 1,
   mobile: '',
+  email: '',
+  idCard: '',
+  birthDate: null,
+  hireDate: null,
   deptId: null,
-  postId: '',
-  hireDate: '',
-  employeeStatus: '在职',
+  postId: null,
+  employeeType: 1,
+  employeeStatus: 1,
+  education: '',
+  userId: null,
   remark: ''
 })
 
@@ -236,15 +330,27 @@ const formRules = {
     { required: true, message: '请选择部门', trigger: 'change' }
   ],
   hireDate: [
-    { required: true, message: '请选择入职日期', trigger: 'change' }
+    { required: true, message: '请选择入职时间', trigger: 'change' }
   ]
+}
+
+// 获取员工类型文本
+const getEmployeeTypeText = (type) => {
+  const map = { 1: '正式', 2: '试用', 3: '实习', 4: '外包' }
+  return map[type] || '-'
+}
+
+// 获取员工状态文本
+const getEmployeeStatusText = (status) => {
+  const map = { 0: '离职', 1: '在职', 2: '停薪留职' }
+  return map[status] || '-'
 }
 
 const columns = [
   {
     title: '工号',
     dataIndex: 'empNo',
-    width: 120
+    width: 100
   },
   {
     title: '姓名',
@@ -254,7 +360,8 @@ const columns = [
   {
     title: '性别',
     dataIndex: 'gender',
-    width: 80
+    width: 60,
+    customRender: ({ record }) => h('span', { style: { color: record.gender === 1 ? '#1890ff' : '#eb2f96' } }, record.gender === 1 ? '男' : '女')
   },
   {
     title: '手机号',
@@ -263,88 +370,62 @@ const columns = [
   },
   {
     title: '部门',
-    dataIndex: 'deptId',
-    width: 120,
-    customRender: ({ record }) => getDeptName(record.deptId)
-  },
-  {
-    title: '岗位',
-    dataIndex: 'postName',
+    dataIndex: 'deptName',
     width: 120
   },
   {
-    title: '状态',
-    dataIndex: 'employeeStatus',
-    width: 100,
-    customRender: ({ record }) => h('a-tag', { type: getStatusType(record.employeeStatus) }, getDeptName(record.employeeStatus))
-  },
-  {
-    title: '入职日期',
+    title: '入职时间',
     dataIndex: 'hireDate',
-    width: 120
+    width: 110
+  },
+  {
+    title: '生日',
+    dataIndex: 'birthDate',
+    width: 110
+  },
+  {
+    title: '员工类型',
+    dataIndex: 'employeeType',
+    width: 80,
+    customRender: ({ record }) => h('a-tag', { color: getEmployeeTypeColor(record.employeeType) }, getEmployeeTypeText(record.employeeType))
+  },
+  {
+    title: '在职状态',
+    dataIndex: 'employeeStatus',
+    width: 80,
+    customRender: ({ record }) => h('a-tag', { color: record.employeeStatus === 1 ? 'green' : 'default' }, getEmployeeStatusText(record.employeeStatus))
   },
   {
     title: '操作',
-    width: 200,
+    width: 150,
     fixed: 'right',
     customRender: ({ record }) => h('div', { class: 'table-actions' }, [
       h('a-button', {
-        type: 'primary',
+        type: 'link',
         size: 'small',
-        class: 'action-btn view-btn',
-        onClick: () => handleView(record)
-      }, {
-        icon: () => h(EyeOutlined),
-        default: () => '查看'
-      }),
-      h('a-button', {
-        type: 'primary',
-        size: 'small',
-        class: 'action-btn edit-btn',
         onClick: () => handleEdit(record)
-      }, {
-        icon: () => h(EditOutlined),
-        default: () => '编辑'
-      }),
+      }, '编辑'),
       h('a-button', {
-        type: 'primary',
+        type: 'link',
         size: 'small',
         danger: true,
-        class: 'action-btn delete-btn',
         onClick: () => handleDelete(record)
-      }, {
-        icon: () => h(DeleteOutlined),
-        default: () => '删除'
-      })
+      }, '删除')
     ])
   }
 ]
 
-const getDeptName = (deptId) => {
-  const deptMap = {
-    1: '技术部',
-    2: '销售部',
-    3: '市场部',
-    4: '人事部'
-  }
-  return deptMap[deptId] || '-'
-}
-
-const getStatusType = (status) => {
-  const typeMap = {
-    '在职': 'success',
-    '试用': 'warning',
-    '离职': 'danger'
-  }
-  return typeMap[status] || 'default'
+const getEmployeeTypeColor = (type) => {
+  const map = { 1: 'blue', 2: 'orange', 3: 'green', 4: 'purple' }
+  return map[type] || 'default'
 }
 
 const loadData = async () => {
   loading.value = true
   try {
-    const res = await employeeApi.getList({
-      current: pagination.current,
-      size: pagination.size,
+    const res = await getEmployeePage({
+      pageNum: pagination.current,
+      pageSize: pagination.size,
       ...searchForm
     })
 
@@ -356,6 +437,42 @@ const loadData = async () => {
     console.error('加载数据失败:', error)
   } finally {
     loading.value = false
+  }
+}
+
+// 加载部门列表
+const loadDepartmentList = async () => {
+  try {
+    const res = await getDepartmentList()
+    if (res.code === 200) {
+      departmentList.value = res.data
+    }
+  } catch (error) {
+    console.error('加载部门列表失败:', error)
+  }
+}
+
+// 加载岗位列表
+const loadPositionList = async () => {
+  try {
+    const res = await getPositionList()
+    if (res.code === 200) {
+      positionList.value = res.data
+    }
+  } catch (error) {
+    console.error('加载岗位列表失败:', error)
+  }
+}
+
+// 加载用户列表
+const loadUserList = async () => {
+  try {
+    const res = await getUserList()
+    if (res.code === 200) {
+      userList.value = res.data
+    }
+  } catch (error) {
+    console.error('加载用户列表失败:', error)
   }
 }
 
@@ -376,14 +493,21 @@ const handleReset = () => {
 const handleAdd = () => {
   dialogTitle.value = '新增员工'
   Object.assign(formData, {
+    id: null,
     empNo: '',
     name: '',
-    gender: '',
+    gender: 1,
     mobile: '',
+    email: '',
+    idCard: '',
+    birthDate: null,
+    hireDate: null,
     deptId: null,
-    postId: '',
-    hireDate: '',
-    employeeStatus: '在职',
+    postId: null,
+    employeeType: 1,
+    employeeStatus: 1,
+    education: '',
+    userId: null,
     remark: ''
   })
   dialogVisible.value = true
@@ -391,12 +515,25 @@ const handleAdd = () => {
 
 const handleEdit = (row) => {
   dialogTitle.value = '编辑员工'
-  Object.assign(formData, row)
+  Object.assign(formData, {
+    id: row.id,
+    empNo: row.empNo,
+    name: row.name,
+    gender: row.gender,
+    mobile: row.mobile,
+    email: row.email,
+    idCard: row.idCard,
+    birthDate: row.birthDate ? dayjs(row.birthDate) : null,
+    hireDate: row.hireDate ? dayjs(row.hireDate) : null,
+    deptId: row.deptId,
+    postId: row.postId,
+    employeeType: row.employeeType,
+    employeeStatus: row.employeeStatus,
+    education: row.education,
+    userId: row.userId,
+    remark: row.remark
+  })
   dialogVisible.value = true
-}
-
-const handleView = (row) => {
-  message.info('查看详情功能开发中')
 }
 
 const handleDelete = (row) => {
@@ -422,12 +559,18 @@ const handleSubmit = async () => {
   if (!formRef.value) return
 
   try {
-    const values = await formRef.value.validateFields()
+    await formRef.value.validate()
+    // 转换日期格式
+    const data = {
+      ...formData,
+      birthDate: formData.birthDate ? formData.birthDate.format('YYYY-MM-DD') : null,
+      hireDate: formData.hireDate ? formData.hireDate.format('YYYY-MM-DD') : null
+    }
     if (formData.id) {
-      await employeeApi.update(formData.id, formData)
+      await updateEmployee(data)
       message.success('更新成功')
     } else {
-      await employeeApi.create(formData)
+      await addEmployee(data)
       message.success('创建成功')
     }
     dialogVisible.value = false
@@ -437,22 +580,11 @@ const handleSubmit = async () => {
   }
 }
 
-const handleDialogClose = () => {
-  formRef.value?.resetFields()
-}
-
-const handleSizeChange = (size) => {
-  pagination.size = size
-  loadData()
-}
-
-const handleCurrentChange = (current) => {
-  pagination.current = current
-  loadData()
-}
-
 onMounted(() => {
   loadData()
+  loadDepartmentList()
+  loadPositionList()
+  loadUserList()
 })
 </script>
 

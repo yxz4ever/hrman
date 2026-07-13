@@ -1,30 +1,51 @@
 import request from '@/utils/request'
-import { apiEndpoints } from '@/config/api.config'
 
-// 认证API
-export const authApi = {
-  // 用户登录
-  login(data) {
-    return request({
-      url: apiEndpoints.auth.login,
-      method: 'post',
-      data
-    })
-  },
+/**
+ * 认证相关 API
+ */
 
-  // 用户退出
-  logout() {
-    return request({
-      url: apiEndpoints.auth.logout,
-      method: 'post'
-    })
-  },
+/**
+ * 登录
+ * @param {Object} data - 登录数据
+ * @returns {Promise}
+ */
+export function login(data) {
+  return request({
+    url: '/auth/login',
+    method: 'post',
+    data
+  })
+}
 
-  // 获取当前用户信息
-  getUserInfo() {
-    return request({
-      url: apiEndpoints.auth.getUserInfo,
-      method: 'get'
-    })
-  }
+/**
+ * 登出
+ * @returns {Promise}
+ */
+export function logout() {
+  return request({
+    url: '/auth/logout',
+    method: 'post'
+  })
+}
+
+/**
+ * 获取当前用户信息
+ * @returns {Promise}
+ */
+export function getCurrentUser() {
+  return request({
+    url: '/auth/current',
+    method: 'get'
+  })
+}
+
+/**
+ * 获取用户列表
+ * @returns {Promise}
+ */
+export function getUserList() {
+  return request({
+    url: '/system/user/list',
+    method: 'get'
+  })
 }
