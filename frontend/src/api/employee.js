@@ -1,23 +1,25 @@
 import request from '@/utils/request'
 
 /**
- * 员工管理 API
+ * 员工管理 API（整合到用户管理）
  */
 
 /**
- * 分页查询员工
+ * 分页查询员工（用户）
  * @param {Object} params - 查询参数
  * @returns {Promise}
  */
 export function getEmployeePage(params) {
   return request({
-    url: '/employee/employee',
+    url: '/system/user',
     method: 'get',
     params: {
       current: params.pageNum,
       size: params.pageSize,
-      name: params.name,
-      empNo: params.empNo,
+      username: params.username,
+      realName: params.realName,
+      userType: params.userType,
+      employeeStatus: params.employeeStatus,
       deptId: params.deptId
     }
   })
@@ -29,32 +31,19 @@ export function getEmployeePage(params) {
  */
 export function getEmployeeList() {
   return request({
-    url: '/employee/employee',
-    method: 'get',
-    params: { current: 1, size: 1000 }
-  })
-}
-
-/**
- * 获取员工详情
- * @param {number} id - 员工 ID
- * @returns {Promise}
- */
-export function getEmployeeById(id) {
-  return request({
-    url: `/employee/employee/${id}`,
+    url: '/system/user/list',
     method: 'get'
   })
 }
 
 /**
- * 根据工号获取员工
- * @param {string} empNo - 工号
+ * 获取员工详情（包含用户和详情）
+ * @param {number} id - 员工 ID
  * @returns {Promise}
  */
-export function getEmployeeByEmpNo(empNo) {
+export function getEmployeeById(id) {
   return request({
-    url: `/employee/employee/emp-no/${empNo}`,
+    url: `/system/user/${id}`,
     method: 'get'
   })
 }
@@ -66,7 +55,7 @@ export function getEmployeeByEmpNo(empNo) {
  */
 export function addEmployee(data) {
   return request({
-    url: '/employee/employee',
+    url: '/system/user',
     method: 'post',
     data
   })
@@ -79,9 +68,47 @@ export function addEmployee(data) {
  */
 export function updateEmployee(data) {
   return request({
-    url: '/employee/employee',
+    url: '/system/user',
     method: 'put',
     data
+  })
+}
+
+/**
+ * 保存员工及详情
+ * @param {Object} data - 包含 user 和 detail 的对象
+ * @returns {Promise}
+ */
+export function saveEmployeeWithDetail(data) {
+  return request({
+    url: '/system/user/with-detail',
+    method: 'put',
+    data
+  })
+}
+
+/**
+ * 更新员工详情
+ * @param {Object} data - 员工详情数据
+ * @returns {Promise}
+ */
+export function updateEmployeeDetail(data) {
+  return request({
+    url: '/system/user/detail',
+    method: 'post',
+    data
+  })
+}
+
+/**
+ * 获取员工详情
+ * @param {number} userId - 用户 ID
+ * @returns {Promise}
+ */
+export function getEmployeeDetail(userId) {
+  return request({
+    url: `/system/user/detail/${userId}`,
+    method: 'get'
   })
 }
 
@@ -92,7 +119,7 @@ export function updateEmployee(data) {
  */
 export function deleteEmployee(id) {
   return request({
-    url: `/employee/employee/${id}`,
+    url: `/system/user/${id}`,
     method: 'delete'
   })
 }
@@ -104,7 +131,7 @@ export function deleteEmployee(id) {
  */
 export function deleteEmployeeBatch(ids) {
   return request({
-    url: '/employee/employee/batch',
+    url: '/system/user/batch',
     method: 'delete',
     data: ids
   })

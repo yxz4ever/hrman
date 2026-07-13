@@ -16,17 +16,27 @@ USE `hrm_db`;
 -- 第一部分：系统权限相关表
 -- =============================================
 
--- 1.1 用户表
+-- 1.1 用户/员工主表（整合用户和员工）
 CREATE TABLE `sys_user` (
-    `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '用户 ID',
+    `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '用户/员工 ID',
     `username` VARCHAR(50) NOT NULL COMMENT '用户名',
-    `password` VARCHAR(100) NOT NULL COMMENT '密码',
-    `real_name` VARCHAR(50) NOT NULL COMMENT '真实姓名',
+    `password` VARCHAR(100) DEFAULT NULL COMMENT '密码（可选，系统用户必填）',
+    `real_name` VARCHAR(50) NOT NULL COMMENT '真实姓名/员工姓名',
+    `gender` TINYINT DEFAULT NULL COMMENT '性别：0-女 1-男',
     `avatar` VARCHAR(255) DEFAULT NULL COMMENT '头像 URL',
     `email` VARCHAR(100) DEFAULT NULL COMMENT '邮箱',
     `mobile` VARCHAR(20) DEFAULT NULL COMMENT '手机号',
+    `id_card` VARCHAR(18) DEFAULT NULL COMMENT '身份证号',
+    `birth_date` DATE DEFAULT NULL COMMENT '出生日期',
+    `hire_date` DATE DEFAULT NULL COMMENT '入职日期',
     `status` TINYINT NOT NULL DEFAULT 1 COMMENT '状态：0-禁用 1-启用',
+    `user_type` TINYINT DEFAULT 1 COMMENT '用户类型：1-系统用户 2-普通员工',
     `dept_id` BIGINT DEFAULT NULL COMMENT '部门 ID',
+    `post_id` BIGINT DEFAULT NULL COMMENT '岗位 ID',
+    `employee_type` TINYINT DEFAULT NULL COMMENT '员工类型：1-正式 2-试用 3-实习 4-外包',
+    `employee_status` TINYINT DEFAULT 1 COMMENT '在职状态：0-离职 1-在职 2-停薪留职',
+    `job_level` VARCHAR(20) DEFAULT NULL COMMENT '职级',
+    `education` VARCHAR(20) DEFAULT NULL COMMENT '学历',
     `last_login_time` DATETIME DEFAULT NULL COMMENT '最后登录时间',
     `last_login_ip` VARCHAR(50) DEFAULT NULL COMMENT '最后登录 IP',
     `created_by` BIGINT DEFAULT NULL COMMENT '创建人',
@@ -36,10 +46,14 @@ CREATE TABLE `sys_user` (
     `deleted` TINYINT NOT NULL DEFAULT 0 COMMENT '删除标识：0-未删除 1-已删除',
     PRIMARY KEY (`id`),
     UNIQUE KEY `uk_username` (`username`),
+    UNIQUE KEY `uk_id_card` (`id_card`),
+    UNIQUE KEY `uk_mobile` (`mobile`),
     KEY `idx_dept_id` (`dept_id`),
+    KEY `idx_post_id` (`post_id`),
     KEY `idx_mobile` (`mobile`),
-    KEY `idx_status` (`status`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='用户表';
+    KEY `idx_status` (`status`),
+    KEY `idx_employee_status` (`employee_status`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='用户/员工主表';
 
 -- 1.2 角色表
 CREATE TABLE `sys_role` (
@@ -154,42 +168,39 @@ CREATE TABLE `hr_position` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='岗位表';
 
 -- =============================================
--- 第二部分：员工主数据表
+-- 第二部分：员工详情表
 -- =============================================
 
--- 2.1 员工主表
-CREATE TABLE `hr_employee` (
-    `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '员工 ID',
-    `emp_no` VARCHAR(20) NOT NULL COMMENT '工号',
-    `name` VARCHAR(50) NOT NULL COMMENT '姓名',
-    `gender` TINYINT NOT NULL COMMENT '性别：0-女 1-男',
-    `mobile` VARCHAR(20) NOT NULL COMMENT '手机号',
-    `id_card` VARCHAR(18) DEFAULT NULL COMMENT '身份证号',
-    `email` VARCHAR(100) DEFAULT NULL COMMENT '邮箱',
-    `birth_date` DATE DEFAULT NULL COMMENT '出生日期',
+-- 2.1 员工详情表（存储员工详细信息）
+CREATE TABLE `hr_employee_detail` (
+    `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '详情 ID',
+    `user_id` BIGINT NOT NULL COMMENT '用户/员工 ID（关联 sys_user.id）',
+    `emp_no` VARCHAR(20) DEFAULT NULL COMMENT '工号',
     `nation` VARCHAR(20) DEFAULT NULL COMMENT '民族',
     `native_place` VARCHAR(100) DEFAULT NULL COMMENT '籍贯',
     `marital_status` TINYINT DEFAULT NULL COMMENT '婚姻状况：0-未婚 1-已婚 2-离异 3-丧偶',
-    `education` VARCHAR(20) DEFAULT NULL COMMENT '学历',
-    `dept_id` BIGINT DEFAULT NULL COMMENT '部门 ID',
-    `post_id` BIGINT DEFAULT NULL COMMENT '岗位 ID',
-    `job_level` VARCHAR(20) DEFAULT NULL COMMENT '职级',
-    `superior_id` BIGINT DEFAULT NULL COMMENT '直接上级 ID',
-    `employee_type` TINYINT DEFAULT NULL COMMENT '员工类型：1-正式 2-试用 3-实习 4-外包',
+    `superior_id` BIGINT DEFAULT NULL COMMENT '直接上级 ID（关联 sys_user.id）',
     `employment_form` TINYINT DEFAULT NULL COMMENT '用工形式：1-全职 2-兼职 3-劳务',
-    `hire_date` DATE DEFAULT NULL COMMENT '入职日期',
     `regular_date` DATE DEFAULT NULL COMMENT '转正日期',
-    `employee_status` TINYINT NOT NULL DEFAULT 1 COMMENT '在职状态：0-离职 1-在职 2-停薪留职',
     `resign_date` DATE DEFAULT NULL COMMENT '离职日期',
     `resign_reason` VARCHAR(200) DEFAULT NULL COMMENT '离职原因',
     `rule_group_id` BIGINT DEFAULT NULL COMMENT '考勤规则组 ID',
     `salary_template_id` BIGINT DEFAULT NULL COMMENT '工资模板 ID',
     `social_policy_id` BIGINT DEFAULT NULL COMMENT '社保政策 ID',
-    `user_id` BIGINT DEFAULT NULL COMMENT '系统用户 ID',
-    `avatar` VARCHAR(255) DEFAULT NULL COMMENT '头像 URL',
     `address` VARCHAR(200) DEFAULT NULL COMMENT '家庭住址',
     `emergency_contact` VARCHAR(50) DEFAULT NULL COMMENT '紧急联系人',
     `emergency_phone` VARCHAR(20) DEFAULT NULL COMMENT '紧急联系电话',
+    `bank_name` VARCHAR(100) DEFAULT NULL COMMENT '开户银行',
+    `bank_account` VARCHAR(50) DEFAULT NULL COMMENT '银行账号',
+    `social_security_no` VARCHAR(50) DEFAULT NULL COMMENT '社保号',
+    `fund_account` VARCHAR(50) DEFAULT NULL COMMENT '公积金账号',
+    `political_status` VARCHAR(20) DEFAULT NULL COMMENT '政治面貌',
+    `graduation_school` VARCHAR(100) DEFAULT NULL COMMENT '毕业院校',
+    `major` VARCHAR(100) DEFAULT NULL COMMENT '专业',
+    `graduation_date` DATE DEFAULT NULL COMMENT '毕业日期',
+    `certificate_info` TEXT DEFAULT NULL COMMENT '证书信息',
+    `work_experience` TEXT DEFAULT NULL COMMENT '工作经历',
+    `family_members` TEXT DEFAULT NULL COMMENT '家庭成员',
     `remark` VARCHAR(500) DEFAULT NULL COMMENT '备注',
     `created_by` BIGINT DEFAULT NULL COMMENT '创建人',
     `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
@@ -197,14 +208,11 @@ CREATE TABLE `hr_employee` (
     `updated_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
     `deleted` TINYINT NOT NULL DEFAULT 0 COMMENT '删除标识：0-未删除 1-已删除',
     PRIMARY KEY (`id`),
+    UNIQUE KEY `uk_user_id` (`user_id`),
     UNIQUE KEY `uk_emp_no` (`emp_no`),
-    UNIQUE KEY `uk_id_card` (`id_card`),
-    UNIQUE KEY `uk_mobile` (`mobile`),
-    KEY `idx_dept_id` (`dept_id`),
-    KEY `idx_post_id` (`post_id`),
-    KEY `idx_employee_status` (`employee_status`),
+    KEY `idx_superior_id` (`superior_id`),
     KEY `idx_user_id` (`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='员工主表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='员工详情表';
 
 -- =============================================
 -- 第三部分：考勤相关表
