@@ -1,0 +1,170 @@
+/* ==================== 操作栏按钮样式 ==================== */
+.action-bar {
+  margin-bottom: 20px;
+  padding: 16px 20px;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.action-bar .action-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  border-radius: 6px;
+  transition: all 0.3s ease;
+  font-weight: 500;
+  border: none;
+}
+
+.action-bar .action-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+}
+
+/* 操作栏按钮颜色 */
+.action-bar .action-btn.primary {
+  background: linear-gradient(135deg, #1890ff 0%, #096dd9 100%);
+  color: #fff;
+}
+
+.action-bar .action-btn.success {
+  background: linear-gradient(135deg, #52c41a 0%, #389e0d 100%);
+  color: #fff;
+}
+
+.action-bar .action-btn.warning {
+  background: linear-gradient(135deg, #faad14 0%, #d48806 100%);
+  color: #fff;
+}
+
+.action-bar .action-btn.danger {
+  background: linear-gradient(135deg, #ff4d4f 0%, #cf1322 100%);
+  color: #fff;
+}
+
+.action-bar .action-btn.info {
+  background: linear-gradient(135deg, #722ed1 0%, #531dab 100%);
+  color: #fff;
+}
+
+/* ==================== 表格操作按钮样式 ==================== */
+.table-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.table-actions .action-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
+  border-radius: 4px;
+  font-size: 13px;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  border: none;
+  color: #fff;
+}
+
+.table-actions .action-btn:hover {
+  transform: scale(1.05);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}
+
+/* 表格操作按钮颜色 */
+.table-actions .action-btn.view-btn,
+.table-actions .action-btn.detail-btn {
+  background: linear-gradient(135deg, #36cfc9 0%, #13c2c2 100%);
+}
+
+.table-actions .action-btn.edit-btn {
+  background: linear-gradient(135deg, #69c0ff 0%, #40a9ff 100%);
+}
+
+.table-actions .action-btn.delete-btn,
+.table-actions .action-btn.adjust-btn {
+  background: linear-gradient(135deg, #ff7875 0%, #ff4d4f 100%);
+}
+
+.table-actions .action-btn.reset-btn,
+.table-actions .action-btn.export-btn {
+  background: linear-gradient(135deg, #ffd666 0%, #ffc53d 100%);
+}
+
+.table-actions .action-btn.assign-btn {
+  background: linear-gradient(135deg, #95de64 0%, #73d13d 100%);
+}
+
+.table-actions .action-btn.add-btn {
+  background: linear-gradient(135deg, #b37feb 0%, #9254de 100%);
+}
+
+.table-actions .action-btn.process-btn,
+.table-actions .action-btn.calculate-btn {
+  background: linear-gradient(135deg, #73d13d 0%, #52c41a 100%);
+}
+
+.table-actions .action-btn.batch-adjust-btn {
+  background: linear-gradient(135deg, #b37feb 0%, #9254de 100%);
+}
+
+/* ==================== 搜索表单样式 ==================== */
+.search-bar,
+.search-form {
+  margin-bottom: 20px;
+  padding: 20px;
+  background: #f5f7fa;
+  border-radius: 8px;
+}
+
+/* ==================== 分页容器样式 ==================== */
+.pagination-container {
+  margin-top: 20px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+/* ==================== 表格容器样式 ==================== */
+.table-container {
+  background: #fff;
+  border-radius: 8px;
+  padding: 16px;
+}
+
+/* ==================== 卡片样式 ==================== */
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.card-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: #303133;
+}
+
+/* ==================== 通用间距 ==================== */
+.mb-20 {
+  margin-bottom: 20px;
+}
+
+.mt-20 {
+  margin-top: 20px;
+}
+
+.mb-10 {
+  margin-bottom: 10px;
+}
+
+.mt-10 {
+  margin-top: 10px;
+}

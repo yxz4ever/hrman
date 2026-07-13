@@ -1,0 +1,20 @@
+# Node modules
+frontend/node_modules/
+
+# Java build
+backend/target/
+
+# IDE
+backend/.idea/
+*.iml
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Environment files
+.env
+.env.local

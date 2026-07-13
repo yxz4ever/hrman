@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.company.hrm.employee.mapper.HrEmployeeMapper">
+
+    <select id="selectEmployeePage" resultType="com.company.hrm.employee.entity.HrEmployee">
+        SELECT
+            e.*,
+            d.dept_name AS deptName,
+            p.post_name AS postName
+        FROM hr_employee e
+        LEFT JOIN sys_dept d ON e.dept_id = d.id
+        LEFT JOIN sys_post p ON e.post_id = p.id
+        WHERE e.deleted = 0
+        <if test="name != null and name != ''">
+            AND e.name LIKE CONCAT('%', #{name}, '%')
+        </if>
+        <if test="empNo != null and empNo != ''">
+            AND e.emp_no LIKE CONCAT('%', #{empNo}, '%')
+        </if>
+        <if test="deptId != null">
+            AND e.dept_id = #{deptId}
+        </if>
+        ORDER BY e.created_at DESC
+    </select>
+
+</mapper>

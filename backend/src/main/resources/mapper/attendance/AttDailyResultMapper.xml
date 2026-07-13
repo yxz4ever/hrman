@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.company.hrm.attendance.mapper.AttDailyResultMapper">
+
+    <select id="selectByEmployeeAndDate" resultType="com.company.hrm.attendance.entity.AttDailyResult">
+        SELECT * FROM att_daily_result
+        WHERE employee_id = #{employeeId}
+        AND work_date = #{workDate}
+        AND deleted = 0
+    </select>
+
+</mapper>
