@@ -15,9 +15,14 @@ import request from '@/utils/request'
  */
 export function getPositionPage(params) {
   return request({
-    url: '/employee/position/page',
+    url: '/employee/position',
     method: 'get',
-    params
+    params: {
+      current: params.pageNum,
+      size: params.pageSize,
+      positionName: params.positionName,
+      deptId: params.deptId
+    }
   })
 }
 

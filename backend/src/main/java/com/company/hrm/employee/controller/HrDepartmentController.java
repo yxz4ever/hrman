@@ -28,13 +28,13 @@ public class HrDepartmentController {
      * 分页查询部门
      */
     @Operation(summary = "分页查询部门")
-    @GetMapping("/page")
+    @GetMapping
     public Result<IPage<HrDepartment>> page(
-            @RequestParam(defaultValue = "1") Integer pageNum,
-            @RequestParam(defaultValue = "10") Integer pageSize,
+            @RequestParam(defaultValue = "1") Integer current,
+            @RequestParam(defaultValue = "10") Integer size,
             @RequestParam(required = false) String deptName) {
 
-        Page<HrDepartment> page = new Page<>(pageNum, pageSize);
+        Page<HrDepartment> page = new Page<>(current, size);
         LambdaQueryWrapper<HrDepartment> wrapper = new LambdaQueryWrapper<>();
 
         if (deptName != null && !deptName.isEmpty()) {

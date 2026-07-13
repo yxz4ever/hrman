@@ -14,9 +14,13 @@ import request from '@/utils/request'
  */
 export function getDepartmentPage(params) {
   return request({
-    url: '/employee/department/page',
+    url: '/employee/department',
     method: 'get',
-    params
+    params: {
+      current: params.pageNum,
+      size: params.pageSize,
+      deptName: params.deptName
+    }
   })
 }
 

@@ -8,8 +8,8 @@
             d.dept_name AS deptName,
             p.post_name AS postName
         FROM hr_employee e
-        LEFT JOIN sys_dept d ON e.dept_id = d.id
-        LEFT JOIN sys_post p ON e.post_id = p.id
+        LEFT JOIN hr_department d ON e.dept_id = d.id
+        LEFT JOIN hr_position p ON e.post_id = p.id
         WHERE e.deleted = 0
         <if test="name != null and name != ''">
             AND e.name LIKE CONCAT('%', #{name}, '%')

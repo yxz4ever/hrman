@@ -11,9 +11,15 @@ import request from '@/utils/request'
  */
 export function getEmployeePage(params) {
   return request({
-    url: '/employee/employee/page',
+    url: '/employee/employee',
     method: 'get',
-    params
+    params: {
+      current: params.pageNum,
+      size: params.pageSize,
+      name: params.name,
+      empNo: params.empNo,
+      deptId: params.deptId
+    }
   })
 }
 
@@ -23,8 +29,9 @@ export function getEmployeePage(params) {
  */
 export function getEmployeeList() {
   return request({
-    url: '/employee/employee/list',
-    method: 'get'
+    url: '/employee/employee',
+    method: 'get',
+    params: { current: 1, size: 1000 }
   })
 }
 

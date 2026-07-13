@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
  * 员工控制器
  */
 @RestController
-@RequestMapping("/employees")
+@RequestMapping("/employee/employee")
 public class HrEmployeeController {
 
     @Autowired

@@ -28,14 +28,14 @@ public class HrPositionController {
      * 分页查询岗位
      */
     @Operation(summary = "分页查询岗位")
-    @GetMapping("/page")
+    @GetMapping
     public Result<IPage<HrPosition>> page(
-            @RequestParam(defaultValue = "1") Integer pageNum,
-            @RequestParam(defaultValue = "10") Integer pageSize,
+            @RequestParam(defaultValue = "1") Integer current,
+            @RequestParam(defaultValue = "10") Integer size,
             @RequestParam(required = false) String positionName,
             @RequestParam(required = false) Long deptId) {
 
-        Page<HrPosition> page = new Page<>(pageNum, pageSize);
+        Page<HrPosition> page = new Page<>(current, size);
         LambdaQueryWrapper<HrPosition> wrapper = new LambdaQueryWrapper<>();
 
         if (positionName != null && !positionName.isEmpty()) {
