@@ -4,7 +4,7 @@
 
 [![Java](https://img.shields.io/badge/Java-17+-orange)](https://openjdk.java.net/)
 [![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.1.5-brightgreen)](https://spring.io/projects/spring-boot)
-[![Vue](https://img.shields.io/badge/Vue-3.3.4-blue)](https://vuejs.org/)
+[![Vue](https://img.shields.io/badge/Vue-3.4-blue)](https://vuejs.org/)
 [![MySQL](https://img.shields.io/badge/MySQL-8.0+-blue)](https://mysql.com/)
 
 ## 📋 目录
@@ -16,7 +16,9 @@
 - [项目结构](#项目结构)
 - [API 文档](#api 文档)
 - [默认账号](#默认账号)
+- [数据库配置](#数据库配置)
 - [开发说明](#开发说明)
+- [更新日志](#更新日志)
 
 ---
 
@@ -31,6 +33,8 @@
 - ✅ **自动化薪资计算** - 支持工资模板、批次管理、自动计算
 - ✅ **社保政策管理** - 多城市社保政策配置，自动计算社保金额
 - ✅ **员工全生命周期管理** - 从入职到离职的完整流程管理
+- ✅ **操作日志审计** - 完整记录用户操作行为，支持追溯查询
+- ✅ **字典管理** - 系统字典数据维护，支持动态配置
 
 ---
 
@@ -141,10 +145,14 @@ cd HR
 mysql -u root -p < database/init.sql
 ```
 
-**默认数据库配置：**
+### 默认数据库配置
 - 数据库名：`hrm_db`
-- 用户名：`root`
-- 密码：`root` (请根据实际情况修改)
+- 主机地址：`192.168.32.129`
+- 端口：`3306`
+- 用户名：`admin`
+- 密码：`123123123`
+
+**注意**: 请根据实际环境修改 `backend/src/main/resources/application.yml` 中的数据库连接配置。
 
 ### 3. 后端启动
 
@@ -296,9 +304,51 @@ HR/
 
 ## 默认账号
 
-| 用户名 | 密码 | 角色 | 权限 |
-|--------|------|------|------|
-| admin | admin123 | 系统管理员 | 所有权限 |
+| 用户名 | 密码 | 角色 | 权限 | 所属部门 |
+|--------|------|------|------|----------|
+| admin | admin123 | 系统管理员 | 所有权限 | 总公司 |
+| zhangsan | admin123 | 普通员工 | 员工权限 | 技术部 |
+| lisi | admin123 | 普通员工 | 员工权限 | 技术部 |
+| wangwu | admin123 | 普通员工 | 员工权限 | 销售部 |
+| zhaoliu | admin123 | 普通员工 | 员工权限 | 市场部 |
+
+**注意**: 首次登录后建议修改默认密码。
+
+---
+
+## 数据库配置
+
+### 数据库连接信息
+
+| 配置项 | 值 |
+|--------|------|
+| 数据库名 | hrm_db |
+| 主机地址 | 192.168.32.129 |
+| 端口 | 3306 |
+| 字符集 | utf8mb4 |
+| 用户名 | admin |
+| 密码 | 123123123 |
+
+### 数据库初始化
+
+```bash
+# 使用 MySQL 命令行导入
+mysql -h 192.168.32.129 -u admin -p < database/init.sql
+
+# 或使用数据库管理工具（如 Navicat、DBeaver）导入 init.sql 文件
+```
+
+### 配置文件位置
+
+后端数据库配置位于：`backend/src/main/resources/application.yml`
+
+```yaml
+spring:
+  datasource:
+    url: jdbc:mysql://192.168.32.129:3306/hrm_db?useUnicode=true&characterEncoding=UTF-8...
+    username: admin
+    password: 123123123
+```
 
 ---
 
@@ -416,6 +466,16 @@ HR/
 
 ## 更新日志
 
+### v1.1.0 (2026-07-16)
+
+**更新内容:**
+- ✅ 更新数据库初始化脚本版本至 1.1.0
+- ✅ 补充默认用户列表注释说明
+- ✅ 添加数据库配置信息到初始化脚本
+- ✅ 完善 README 文档，新增数据库配置章节
+- ✅ 更新默认账号列表，包含所有测试用户
+- ✅ 优化文档结构和内容
+
 ### v1.0.0 (2026-07-13)
 
 **新增功能:**
@@ -429,7 +489,7 @@ HR/
 
 **技术特性:**
 - ✅ Spring Boot 3.1.5
-- ✅ Vue 3.3.4 + Element Plus
+- ✅ Vue 3.4 + Ant Design Vue 4.x
 - ✅ MyBatis-Plus ORM
 - ✅ JWT 认证
 - ✅ RBAC 权限模型
@@ -442,5 +502,5 @@ HR/
 
 ---
 
-**开发团队**: 人力资源管理系统项目组  
-**最后更新**: 2026 年 7 月 13 日
+**开发团队**: 人力资源管理系统项目组
+**最后更新**: 2026 年 7 月 16 日

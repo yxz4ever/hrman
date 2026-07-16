@@ -3,8 +3,8 @@
 -- 数据库：hrm_db
 -- 字符集：utf8mb4
 -- 创建日期：2026-07-08
--- 最后更新：2026-07-13
--- 版本：1.0.0
+-- 最后更新：2026-07-16
+-- 版本：1.1.0
 -- =============================================
 
 -- 创建数据库
@@ -124,7 +124,7 @@ CREATE TABLE `sys_role_menu` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='角色菜单关联表';
 
 -- 1.6 部门表
-CREATE TABLE `hr_department` (
+CREATE TABLE `sys_dept` (
     `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '部门 ID',
     `parent_id` BIGINT NOT NULL DEFAULT 0 COMMENT '父部门 ID',
     `dept_name` VARCHAR(50) NOT NULL COMMENT '部门名称',
@@ -134,7 +134,6 @@ CREATE TABLE `hr_department` (
     `email` VARCHAR(100) DEFAULT NULL COMMENT '邮箱',
     `sort_order` INT DEFAULT 0 COMMENT '排序',
     `status` TINYINT NOT NULL DEFAULT 1 COMMENT '状态：0-禁用 1-启用',
-    `remark` VARCHAR(500) DEFAULT NULL COMMENT '备注',
     `created_by` BIGINT DEFAULT NULL COMMENT '创建人',
     `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     `updated_by` BIGINT DEFAULT NULL COMMENT '更新人',
@@ -146,17 +145,15 @@ CREATE TABLE `hr_department` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='部门表';
 
 -- 1.7 岗位表
-CREATE TABLE `hr_position` (
+CREATE TABLE `sys_post` (
     `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '岗位 ID',
     `post_code` VARCHAR(50) NOT NULL COMMENT '岗位编码',
     `post_name` VARCHAR(50) NOT NULL COMMENT '岗位名称',
-    `position_name` VARCHAR(50) DEFAULT NULL COMMENT '职位名称',
     `post_level` VARCHAR(20) DEFAULT NULL COMMENT '岗位职级',
     `dept_id` BIGINT DEFAULT NULL COMMENT '所属部门 ID',
     `description` VARCHAR(500) DEFAULT NULL COMMENT '岗位描述',
     `sort_order` INT DEFAULT 0 COMMENT '排序',
     `status` TINYINT NOT NULL DEFAULT 1 COMMENT '状态：0-禁用 1-启用',
-    `remark` VARCHAR(500) DEFAULT NULL COMMENT '备注',
     `created_by` BIGINT DEFAULT NULL COMMENT '创建人',
     `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     `updated_by` BIGINT DEFAULT NULL COMMENT '更新人',
@@ -565,8 +562,19 @@ CREATE TABLE `sys_oper_log` (
 -- =============================================
 
 -- 8.1 插入默认用户（密码：admin123）
-INSERT INTO `sys_user` (`username`, `password`, `real_name`, `email`, `mobile`, `status`, `dept_id`) VALUES
-('admin', '$2a$10$B4b2kRCJbV.YdLJUwtPzwOv3EGWCvPtqK1EnGaEJGm/9.u/4mwyZa', '系统管理员', 'admin@example.com', '13800138000', 1, 1);
+-- 注意：BCrypt 哈希每次生成都不同，但验证时会正确匹配
+-- 默认用户列表：
+--   admin / admin123 - 系统管理员（所有权限）
+--   zhangsan / admin123 - 员工（技术部）
+--   lisi / admin123 - 员工（技术部）
+--   wangwu / admin123 - 员工（销售部）
+--   zhaoliu / admin123 - 员工（市场部）
+INSERT INTO `sys_user` (`username`, `password`, `real_name`, `email`, `mobile`, `status`, `user_type`, `dept_id`, `post_id`, `employee_status`, `hire_date`) VALUES
+('admin', '$2a$10$UVDrqnxdv/jwJVDXkv0HseeIiSZKKesK0.RvGpwx.4T2Gp6bkbF8a', '系统管理员', 'admin@example.com', '13800138000', 1, 1, 1, 1, 1, '2020-01-01'),
+('zhangsan', '$2a$10$UVDrqnxdv/jwJVDXkv0HseeIiSZKKesK0.RvGpwx.4T2Gp6bkbF8a', '张三', 'zhangsan@example.com', '13800138001', 1, 2, 2, 8, 1, '2022-03-15'),
+('lisi', '$2a$10$UVDrqnxdv/jwJVDXkv0HseeIiSZKKesK0.RvGpwx.4T2Gp6bkbF8a', '李四', 'lisi@example.com', '13800138002', 1, 2, 2, 9, 1, '2023-06-01'),
+('wangwu', '$2a$10$UVDrqnxdv/jwJVDXkv0HseeIiSZKKesK0.RvGpwx.4T2Gp6bkbF8a', '王五', 'wangwu@example.com', '13800138003', 1, 2, 3, 10, 1, '2021-09-01'),
+('zhaoliu', '$2a$10$UVDrqnxdv/jwJVDXkv0HseeIiSZKKesK0.RvGpwx.4T2Gp6bkbF8a', '赵六', 'zhaoliu@example.com', '13800138004', 1, 2, 4, NULL, 1, '2023-01-10');
 
 -- 8.2 插入默认角色
 INSERT INTO `sys_role` (`role_code`, `role_name`, `description`, `status`, `sort_order`) VALUES
@@ -576,7 +584,14 @@ INSERT INTO `sys_role` (`role_code`, `role_name`, `description`, `status`, `sort
 INSERT INTO `sys_user_role` (`user_id`, `role_id`) VALUES
 (1, 1);
 
--- 8.4 插入默认部门
+-- 8.4 插入员工详情数据
+INSERT INTO `hr_employee_detail` (`user_id`, `emp_no`, `nation`, `native_place`, `marital_status`, `employment_form`, `regular_date`, `address`, `bank_name`, `bank_account`, `graduation_school`, `major`, `graduation_date`, `emergency_contact`, `emergency_phone`) VALUES
+(2, 'EMP2022001', '汉族', '北京', 1, 1, '2022-09-01', '北京市朝阳区 xx 路 xx 号', '工商银行', '6222021000000000001', '北京大学', '计算机科学', '2022-06-30', '李四', '13800138002'),
+(3, 'EMP2023001', '汉族', '上海', 0, 1, '2023-09-01', '上海市浦东新区 xx 路 xx 号', '建设银行', '6227001000000000001', '复旦大学', '软件工程', '2023-06-30', '张三', '13800138001'),
+(4, 'EMP2021001', '汉族', '广州', 1, 1, '2022-03-01', '广州市天河区 xx 路 xx 号', '农业银行', '6228481000000000001', '中山大学', '市场营销', '2021-06-30', '王五', '13800138003'),
+(5, 'EMP2023002', '汉族', '深圳', 0, 1, NULL, '深圳市福田区 xx 路 xx 号', '中国银行', '6222021000000000002', '深圳职业技术学院', '人力资源管理', '2022-06-30', '赵六', '13800138004');
+
+-- 8.5 插入默认部门
 INSERT INTO `sys_dept` (`parent_id`, `dept_name`, `dept_code`, `phone`, `email`, `sort_order`, `status`) VALUES
 (0, '总公司', 'HQ', '010-12345678', 'hq@example.com', 1, 1),
 (1, '技术部', 'TECH', '010-12345679', 'tech@example.com', 1, 1),
@@ -586,7 +601,7 @@ INSERT INTO `sys_dept` (`parent_id`, `dept_name`, `dept_code`, `phone`, `email`,
 (1, '财务部', 'FINANCE', '010-12345683', 'finance@example.com', 5, 1),
 (1, '行政部', 'ADMIN', '010-12345684', 'admin@example.com', 6, 1);
 
--- 8.5 插入默认岗位
+-- 8.6 插入默认岗位
 INSERT INTO `sys_post` (`post_code`, `post_name`, `post_level`, `dept_id`, `description`, `sort_order`, `status`) VALUES
 ('CEO', '首席执行官', 'L1', 1, '公司最高管理者', 1, 1),
 ('CTO', '首席技术官', 'L2', 2, '技术部门负责人', 1, 1),
@@ -599,7 +614,7 @@ INSERT INTO `sys_post` (`post_code`, `post_name`, `post_level`, `dept_id`, `desc
 ('ENGINEER', '工程师', 'L5', 2, '技术岗位', 3, 1),
 ('SALES_REP', '销售代表', 'L5', 3, '销售岗位', 2, 1);
 
--- 8.6 插入默认菜单（path 字段存储完整的前端路由路径）
+-- 8.7 插入默认菜单（path 字段存储完整的前端路由路径）
 INSERT INTO `sys_menu` (`parent_id`, `menu_name`, `menu_type`, `menu_code`, `path`, `component`, `icon`, `permission`, `sort_order`, `visible`, `status`) VALUES
 -- 一级菜单：首页
 (0, '首页', 2, 'dashboard', 'dashboard', 'dashboard/index', 'dashboard', NULL, 0, 1, 1),
@@ -628,17 +643,17 @@ INSERT INTO `sys_menu` (`parent_id`, `menu_name`, `menu_type`, `menu_code`, `pat
 (11, '字典管理', 2, 'dictionary', 'system/dictionary', 'system/dictionary', 'book', NULL, 4, 1, 1),
 (11, '操作日志', 2, 'operation_log', 'system/operation-log', 'system/operation-log', 'file-text', NULL, 5, 1, 1);
 
--- 8.7 插入角色菜单关联（管理员拥有所有权限）
+-- 8.8 插入角色菜单关联（管理员拥有所有权限）
 INSERT INTO `sys_role_menu` (`role_id`, `menu_id`)
 SELECT 1, id FROM `sys_menu`;
 
--- 8.8 插入默认考勤规则
+-- 8.9 插入默认考勤规则
 INSERT INTO `att_rule` (`rule_code`, `rule_name`, `rule_type`, `priority`, `check_in_time`, `check_out_time`, `latest_check_in_time`, `earliest_check_out_time`, `required_work_minutes`, `allow_late_minutes`, `allow_early_leave_minutes`, `rest_start_time`, `rest_end_time`, `cross_day_flag`, `overtime_flag`, `status`, `description`) VALUES
 ('FIXED_9_6', '固定班制 9:00-18:00', 1, 1, '09:00:00', '18:00:00', NULL, NULL, 480, 10, 10, '12:00:00', '13:00:00', 0, 1, 1, '标准固定班制，工作 8 小时，中午休息 1 小时'),
 ('FLEXIBLE_10_8', '弹性工时 最晚 10 点上班', 2, 2, NULL, NULL, '10:00:00', NULL, 480, 0, 0, NULL, NULL, 0, 1, 1, '弹性工时，最晚 10 点前上班，累计工作 8 小时'),
 ('WORK_HOURS_8', '按工时制 8 小时', 3, 3, NULL, NULL, NULL, NULL, 480, 0, 0, NULL, NULL, 0, 1, 1, '按工时制，任意时间段打卡，累计工作 8 小时');
 
--- 8.9 插入默认字典类型
+-- 8.10 插入默认字典类型
 INSERT INTO `sys_dict_type` (`dict_code`, `dict_name`, `description`, `status`) VALUES
 ('user_status', '用户状态', '用户账户状态', 1),
 ('menu_type', '菜单类型', '菜单类型分类', 1),
@@ -648,7 +663,7 @@ INSERT INTO `sys_dict_type` (`dict_code`, `dict_name`, `description`, `status`) 
 ('business_type', '业务类型', '操作业务类型', 1),
 ('oper_status', '操作状态', '操作执行状态', 1);
 
--- 8.10 插入默认字典数据
+-- 8.11 插入默认字典数据
 INSERT INTO `sys_dict_item` (`dict_type_id`, `dict_label`, `dict_value`, `sort`, `description`)
 SELECT dt.id, label, value, sort, item_desc FROM (
     -- 用户状态
@@ -695,3 +710,5 @@ WHERE dt.deleted = 0;
 -- 初始化完成
 -- =============================================
 SELECT '人力资源管理系统数据库初始化完成！' as result;
+SELECT '默认用户：admin / admin123' as default_user;
+SELECT '数据库配置：host=192.168.32.129, port=3306, database=hrm_db' as db_config;
